@@ -43,7 +43,6 @@ For instance, in order to select a String field called `test` you would use `met
 ```json
 {
   "ping_info": {
-    "ping_type": "metrics",
     "experiments": {
       "third_party_library": {
         "branch": "enabled"

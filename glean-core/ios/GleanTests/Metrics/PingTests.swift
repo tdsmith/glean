@@ -62,9 +62,6 @@ class PingTests: XCTestCase {
             XCTAssertNil(error, "Test timed out waiting for upload: \(error!)")
         }
 
-        let pingInfo = lastPingJson?["ping_info"] as? [String: Any]
-        XCTAssertEqual(pingInfo?["ping_type"] as? String, "custom")
-
         let clientInfo = lastPingJson?["client_info"] as? [String: Any]
         XCTAssertNotNil(clientInfo?["client_id"] as? String)
     }
@@ -91,9 +88,6 @@ class PingTests: XCTestCase {
         waitForExpectations(timeout: 5.0) { error in
             XCTAssertNil(error, "Test timed out waiting for upload: \(error!)")
         }
-
-        let pingInfo = lastPingJson?["ping_info"] as? [String: Any]
-        XCTAssertEqual(pingInfo?["ping_type"] as? String, "custom")
 
         let clientInfo = lastPingJson?["client_info"] as? [String: Any]
         XCTAssertNil(clientInfo?["client_id"] as? String)

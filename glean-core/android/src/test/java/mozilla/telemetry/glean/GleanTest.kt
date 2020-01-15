@@ -223,11 +223,9 @@ class GleanTest {
 
             val eventsJson = JSONObject(requests["events"]!!)
             checkPingSchema(eventsJson)
-            assertEquals("events", eventsJson.getJSONObject("ping_info")["ping_type"])
             assertEquals(1, eventsJson.getJSONArray("events").length())
 
             val baselineJson = JSONObject(requests["baseline"]!!)
-            assertEquals("baseline", baselineJson.getJSONObject("ping_info")["ping_type"])
             checkPingSchema(baselineJson)
 
             val baselineMetricsObject = baselineJson.getJSONObject("metrics")
@@ -460,7 +458,6 @@ class GleanTest {
         assertEquals(pingName, docType)
 
         val pingJson = JSONObject(request.body.readUtf8())
-        assertEquals(pingName, pingJson.getJSONObject("ping_info")["ping_type"])
         checkPingSchema(pingJson)
 
         val pingMetricsObject = pingJson.getJSONObject("metrics")
