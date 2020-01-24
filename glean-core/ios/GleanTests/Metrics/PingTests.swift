@@ -19,10 +19,14 @@ class PingTests: XCTestCase {
         expectation = nil
     }
 
-    private func setupHttpResponseStub(statusCode: Int32 = 200) {
+    private func setupHttpResponseStub(_ expectedPingType: String) {
         let host = URL(string: Configuration.Constants.defaultTelemetryEndpoint)!.host!
-        stub(condition: isHost(host)) { data in
-            let body = (data as NSURLRequest).ohhttpStubs_HTTPBody()
+        stub(condition: isHost(host)) { request in
+            let request = request as NSURLRequest
+            let pingType = request.url?.path.split(separator: "/")[2]
+            XCTAssertEqual(String(pingType!), expectedPingType, "Wrong ping type received")
+
+            let body = request.ohhttpStubs_HTTPBody()
             let json = try! JSONSerialization.jsonObject(with: body!, options: []) as? [String: Any]
             XCTAssert(json != nil)
             self.lastPingJson = json
@@ -33,7 +37,7 @@ class PingTests: XCTestCase {
             // Ensure a response so that the uploader does its job.
             return OHHTTPStubsResponse(
                 jsonObject: [],
-                statusCode: statusCode,
+                statusCode: 200,
                 headers: ["Content-Type": "application/json"]
             )
         }
@@ -50,7 +54,7 @@ class PingTests: XCTestCase {
             disabled: false
         )
 
-        setupHttpResponseStub()
+        setupHttpResponseStub("custom")
         expectation = expectation(description: "Completed upload")
 
         counter.add()
@@ -77,7 +81,7 @@ class PingTests: XCTestCase {
             disabled: false
         )
 
-        setupHttpResponseStub()
+        setupHttpResponseStub("custom")
         expectation = expectation(description: "Completed upload")
 
         counter.add()
@@ -105,7 +109,7 @@ class PingTests: XCTestCase {
         counter.add()
         XCTAssert(counter.testHasValue())
 
-        setupHttpResponseStub()
+        setupHttpResponseStub("INVALID")
         // Fail if the server receives data
         expectation = expectation(description: "Completed unexpected upload")
         expectation?.isInverted = true
